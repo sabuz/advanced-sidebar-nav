@@ -6,14 +6,17 @@
 	"license": "GPL-2.0-or-later",
 	"main": "block/build/index.js",
 	"scripts": {
-		"build": "wp-scripts build",
-		"dev": "wp-scripts start",
+		"build": "wp-scripts build && npm run build:scss",
+		"build:scss": "npx sass assets/style.scss assets/style.css --style=compressed --no-source-map",
+		"dev": "concurrently \"wp-scripts start\" \"npm run dev:scss\"",
+		"dev:scss": "npx sass assets/style.scss assets/style.css --watch --style=expanded --no-source-map",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.24.0"
+		"@wordpress/scripts": "^30.24.0",
+		"concurrently": "^8.2.2"
 	},
 	"dependencies": {
 		"@wordpress/data": "^10.31.0",
