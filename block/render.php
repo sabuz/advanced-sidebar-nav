@@ -3,29 +3,24 @@
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
 
-// Extract attributes
-$menu        = $attributes['menu'] ?? '';
-$theme       = $attributes['theme'] ?? 'default';
-$accentColor = $attributes['accentColor'] ?? '#0f434f';
-
-error_log( print_r( $attributes, true ) );
-
-// Build CSS classes
+$menu_slug          = $attributes['menu'] ?? '';
+$theme              = $attributes['theme'] ?? 'default';
+$accent_color       = $attributes['accentColor'] ?? '#0f434f';
 $classes            = [ 'advanced-sidebar-nav', 'advanced-sidebar-nav-' . $theme ];
 $wrapper_attributes = get_block_wrapper_attributes(
 	[
 		'class' => implode( ' ', $classes ),
-		'style' => ! empty( $accentColor ) ? '--accent-color: ' . esc_attr( $accentColor ) . ';' : '',
+		'style' => ! empty( $accent_color ) ? '--accent-color: ' . esc_attr( $accent_color ) . ';' : '',
 	]
 );
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-	<?php if ( ! empty( $menu ) ) : ?>
+	<?php if ( ! empty( $menu_slug ) ) : ?>
 		<?php
 		$nav_menu = wp_nav_menu(
 			[
-				'menu'            => $menu,
+				'menu'            => $menu_slug,
 				'menu_class'      => 'advanced-sidebar-menu',
 				'container_class' => 'advanced-sidebar-nav-container',
 				'echo'            => false,

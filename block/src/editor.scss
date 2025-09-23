@@ -1,9 +1,23 @@
 /**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
+ * Editor styles for Advanced Sidebar Nav block
  */
 
-.wp-block-create-block-advanced-sidebar-nav {
-	border: 1px dotted #f00;
+.wp-block-advanced-sidebar-nav-nav {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 16px;
+}
+
+.advanced-sidebar-nav-placeholder {
+	text-align: center;
+	padding: 20px;
+	color: #666;
+	background: #f9f9f9;
+	border: 2px dashed #ddd;
+	border-radius: 4px;
+}
+
+.advanced-sidebar-nav-placeholder p {
+	margin: 0;
+	font-style: italic;
 }

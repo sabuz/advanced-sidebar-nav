@@ -15,6 +15,7 @@ import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import { PanelBody, TextControl, SelectControl } from "@wordpress/components";
 import { useSelect } from "@wordpress/data";
 import { useState, useEffect } from "@wordpress/element";
+import ServerSideRender from "@wordpress/server-side-render";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -105,11 +106,18 @@ export default function Edit({ attributes, setAttributes }) {
 				</PanelBody>
 			</InspectorControls>
 
-			{/* Example block content output */}
+			{/* Block preview */}
 			<div {...useBlockProps()}>
-				<p>Menu: {menu}</p>
-				<p>Theme: {theme || "Default"}</p>
-				<p>Accent Color: {accentColor || "#0f434f"}</p>
+				{menu ? (
+					<ServerSideRender
+						block="advanced-sidebar-nav/advanced-sidebar-nav"
+						attributes={attributes}
+					/>
+				) : (
+					<div className="advanced-sidebar-nav-placeholder">
+						<p>{__("Please select a menu from the block settings.", "advanced-sidebar-nav")}</p>
+					</div>
+				)}
 			</div>
 		</>
 	);
