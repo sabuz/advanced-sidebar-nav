@@ -71,6 +71,7 @@
   display: none;
 }
 .advanced-sidebar-nav ul a {
+  all: unset;
   position: relative;
   display: block;
   font-size: 14px !important;
@@ -83,6 +84,7 @@
   outline: none;
   box-shadow: none;
   transition: all 100ms;
+  cursor: pointer;
 }
 .advanced-sidebar-nav ul a:hover, .advanced-sidebar-nav ul a.advanced-sidebar-nav-menu-open {
   transform: none !important;
