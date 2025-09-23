@@ -12,10 +12,10 @@
 		"title": {
 			"type": "string"
 		},
-		"selectMenu": {
+		"menu": {
 			"type": "string"
 		},
-		"selectTheme": {
+		"theme": {
 			"type": "string"
 		},
 		"accentColor": {

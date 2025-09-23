@@ -33,7 +33,7 @@ import "./editor.scss";
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes }) {
-	const { title, selectMenu, selectTheme, accentColor } = attributes;
+	const { title, menu, theme, accentColor } = attributes;
 
 	const menus = useSelect((select) => {
 		const terms = select("core").getEntityRecords("taxonomy", "nav_menu");
@@ -52,6 +52,12 @@ export default function Edit({ attributes, setAttributes }) {
 			setMenuOptions(navOptions);
 		}
 	}, [menus]);
+
+	// useEffect(() => {
+	// 	fetch("/wp-json/wp/v2/menus")
+	// 		.then((res) => res.json())
+	// 		.then((data) => console.log(data));
+	// }, []);
 
 	return (
 		<>
@@ -74,9 +80,9 @@ export default function Edit({ attributes, setAttributes }) {
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={__("Select Menu", "advanced-sidebar-nav")}
-						value={selectMenu}
+						value={menu}
 						options={menuOptions}
-						onChange={(value) => setAttributes({ selectMenu: value })}
+						onChange={(value) => setAttributes({ menu: value })}
 					/>
 
 					{/* Theme Select */}
@@ -84,14 +90,14 @@ export default function Edit({ attributes, setAttributes }) {
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={__("Select Theme", "advanced-sidebar-nav")}
-						value={selectTheme || "default"}
+						value={theme || "default"}
 						options={[
 							{
 								label: __("Default", "advanced-sidebar-nav"),
 								value: "default",
 							},
 						]}
-						onChange={(value) => setAttributes({ selectTheme: value })}
+						onChange={(value) => setAttributes({ theme: value })}
 					/>
 
 					{/* Accent Color */}
@@ -109,8 +115,8 @@ export default function Edit({ attributes, setAttributes }) {
 			{/* Example block content output */}
 			<div {...useBlockProps()}>
 				<h3>{title}</h3>
-				<p>Menu: {selectMenu}</p>
-				<p>Theme: {selectTheme || "Default"}</p>
+				<p>Menu: {menu}</p>
+				<p>Theme: {theme || "Default"}</p>
 				<p>Accent Color: {accentColor || "#0f434f"}</p>
 			</div>
 		</>
