@@ -13,6 +13,8 @@ import { __ } from "@wordpress/i18n";
  */
 import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import { PanelBody, TextControl, SelectControl } from "@wordpress/components";
+import { useSelect } from "@wordpress/data";
+import { useState, useEffect } from "@wordpress/element";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -32,6 +34,24 @@ import "./editor.scss";
  */
 export default function Edit({ attributes, setAttributes }) {
 	const { title, selectMenu, selectTheme, accentColor } = attributes;
+
+	const menus = useSelect((select) => {
+		const terms = select("core").getEntityRecords("taxonomy", "nav_menu");
+		return terms;
+	}, []);
+
+	const [menuOptions, setMenuOptions] = useState([]);
+
+	useEffect(() => {
+		if (menus) {
+			const navOptions = menus.map((menu) => ({
+				label: __(menu.name, "advanced-sidebar-nav"),
+				value: menu.slug,
+			}));
+
+			setMenuOptions(navOptions);
+		}
+	}, [menus]);
 
 	return (
 		<>
@@ -55,12 +75,7 @@ export default function Edit({ attributes, setAttributes }) {
 						__nextHasNoMarginBottom
 						label={__("Select Menu", "advanced-sidebar-nav")}
 						value={selectMenu}
-						options={[
-							{ label: __("Select a menu", "advanced-sidebar-nav"), value: "" },
-							{ label: __("Menu 1", "advanced-sidebar-nav"), value: "menu1" },
-							{ label: __("Menu 2", "advanced-sidebar-nav"), value: "menu2" },
-							{ label: __("Menu 3", "advanced-sidebar-nav"), value: "menu3" },
-						]}
+						options={menuOptions}
 						onChange={(value) => setAttributes({ selectMenu: value })}
 					/>
 
