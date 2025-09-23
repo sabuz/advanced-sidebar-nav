@@ -20,7 +20,7 @@ final class Advanced_Sidebar_Nav {
 		// actions
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'widgets_init', [ $this, 'register_widget' ] );
-		add_action( 'init', [ $this, 'create_block_advanced_sidebar_nav_block_init' ] );
+		add_action( 'init', [ $this, 'register_block' ] );
 	}
 
 	// create instance
@@ -49,27 +49,9 @@ final class Advanced_Sidebar_Nav {
 		register_widget( 'Advanced_Sidebar_Nav_Widget' );
 	}
 
-	// Block registration
-	public function create_block_advanced_sidebar_nav_block_init() {
-		if ( function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
-			wp_register_block_types_from_metadata_collection(
-				__DIR__ . '/blocks/advanced-sidebar-nav/build',
-				__DIR__ . '/blocks/advanced-sidebar-nav/build/blocks-manifest.php'
-			);
-			return;
-		}
-
-		if ( function_exists( 'wp_register_block_metadata_collection' ) ) {
-			wp_register_block_metadata_collection(
-				__DIR__ . '/blocks/advanced-sidebar-nav/build',
-				__DIR__ . '/blocks/advanced-sidebar-nav/build/blocks-manifest.php'
-			);
-		}
-
-		$manifest_data = require __DIR__ . '/blocks/advanced-sidebar-nav/build/blocks-manifest.php';
-		foreach ( array_keys( $manifest_data ) as $block_type ) {
-			register_block_type( __DIR__ . "/blocks/advanced-sidebar-nav/build/{$block_type}" );
-		}
+	// Simple block registration - no manifest needed for single block
+	public function register_block() {
+		register_block_type( __DIR__ . '/blocks/advanced-sidebar-nav' );
 	}
 }
 
