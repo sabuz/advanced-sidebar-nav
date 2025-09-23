@@ -4,7 +4,6 @@
  */
 
 // Extract attributes
-$title       = $attributes['title'] ?? '';
 $menu        = $attributes['menu'] ?? '';
 $theme       = $attributes['theme'] ?? 'default';
 $accentColor = $attributes['accentColor'] ?? '#0f434f';
@@ -22,10 +21,6 @@ $wrapper_attributes = get_block_wrapper_attributes(
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-	<?php if ( ! empty( $title ) ) : ?>
-		<h3 class="advanced-sidebar-nav-title"><?php echo esc_html( $title ); ?></h3>
-	<?php endif; ?>
-
 	<?php if ( ! empty( $menu ) ) : ?>
 		<?php
 		$nav_menu = wp_nav_menu(

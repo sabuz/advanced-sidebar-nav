@@ -8,10 +8,6 @@
 	"icon": "menu",
 	"description": "Display navigation menus in sidebar with advanced styling options.",
 	"attributes": {
-		"title": {
-			"type": "string",
-			"default": ""
-		},
 		"menu": {
 			"type": "string",
 			"default": ""

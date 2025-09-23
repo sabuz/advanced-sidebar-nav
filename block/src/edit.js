@@ -33,7 +33,7 @@ import "./editor.scss";
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes }) {
-	const { title, menu, theme, accentColor } = attributes;
+	const { menu, theme, accentColor } = attributes;
 
 	const menus = useSelect((select) => {
 		const terms = select("core").getEntityRecords("taxonomy", "nav_menu");
@@ -64,15 +64,6 @@ export default function Edit({ attributes, setAttributes }) {
 					title={__("Settings", "advanced-sidebar-nav")}
 					initialOpen={true}
 				>
-					{/* Title */}
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						label={__("Title", "advanced-sidebar-nav")}
-						value={title}
-						onChange={(value) => setAttributes({ title: value })}
-					/>
-
 					{/* Menu Select */}
 					<SelectControl
 						__next40pxDefaultSize
@@ -116,7 +107,6 @@ export default function Edit({ attributes, setAttributes }) {
 
 			{/* Example block content output */}
 			<div {...useBlockProps()}>
-				<h3>{title}</h3>
 				<p>Menu: {menu}</p>
 				<p>Theme: {theme || "Default"}</p>
 				<p>Accent Color: {accentColor || "#0f434f"}</p>
