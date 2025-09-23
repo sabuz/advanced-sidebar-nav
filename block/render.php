@@ -1,6 +1,10 @@
 <?php
 /**
+ * Server-side rendering for Advanced Sidebar Nav block.
+ *
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
+ *
+ * @package Advanced_Sidebar_Nav
  */
 
 $menu_slug          = $attributes['menu'] ?? '';
@@ -15,7 +19,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 );
 ?>
 
-<div <?php echo $wrapper_attributes; ?>>
+<div <?php echo wp_kses_data( $wrapper_attributes ); ?>>
 	<?php if ( ! empty( $menu_slug ) ) : ?>
 		<?php
 		$nav_menu = wp_nav_menu(
@@ -28,12 +32,12 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		);
 
 		if ( $nav_menu ) {
-			echo $nav_menu;
+			echo wp_kses_post( $nav_menu );
 		} else {
-			echo '<p>' . __( 'No menu found. Please select a valid menu.', 'advanced-sidebar-nav' ) . '</p>';
+			echo '<p>' . esc_html__( 'No menu found. Please select a valid menu.', 'advanced-sidebar-nav' ) . '</p>';
 		}
 		?>
 	<?php else : ?>
-		<p><?php _e( 'Please select a menu from the block settings.', 'advanced-sidebar-nav' ); ?></p>
+		<p><?php esc_html_e( 'Please select a menu from the block settings.', 'advanced-sidebar-nav' ); ?></p>
 	<?php endif; ?>
 </div>
