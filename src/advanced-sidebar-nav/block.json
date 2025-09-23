@@ -10,16 +10,20 @@
 	"example": {},
 	"attributes": {
 		"title": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"menu": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"theme": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"accentColor": {
-			"type": "string"
+			"type": "string",
+			"default": "#dd102d"
 		}
 	},
 	"supports": {

@@ -48,16 +48,14 @@ export default function Edit({ attributes, setAttributes }) {
 				label: __(menu.name, "advanced-sidebar-nav"),
 				value: menu.slug,
 			}));
+			navOptions.unshift({
+				label: __("Select Menu", "advanced-sidebar-nav"),
+				value: "",
+			});
 
 			setMenuOptions(navOptions);
 		}
 	}, [menus]);
-
-	// useEffect(() => {
-	// 	fetch("/wp-json/wp/v2/menus")
-	// 		.then((res) => res.json())
-	// 		.then((data) => console.log(data));
-	// }, []);
 
 	return (
 		<>
@@ -79,7 +77,7 @@ export default function Edit({ attributes, setAttributes }) {
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
-						label={__("Select Menu", "advanced-sidebar-nav")}
+						label={__("Select menu", "advanced-sidebar-nav")}
 						value={menu}
 						options={menuOptions}
 						onChange={(value) => setAttributes({ menu: value })}
@@ -90,12 +88,16 @@ export default function Edit({ attributes, setAttributes }) {
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
 						label={__("Select Theme", "advanced-sidebar-nav")}
-						value={theme || "default"}
+						value={theme}
 						options={[
+							{
+								label: __("Select theme", "advanced-sidebar-nav"),
+								value: "",
+							},
 							{
 								label: __("Default", "advanced-sidebar-nav"),
 								value: "default",
-							},
+							}
 						]}
 						onChange={(value) => setAttributes({ theme: value })}
 					/>

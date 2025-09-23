@@ -2,7 +2,44 @@
 /**
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
+
+// Extract attributes
+$title = $attributes['title'] ?? '';
+$menu = $attributes['menu'] ?? '';
+$theme = $attributes['theme'] ?? 'default';
+$accentColor = $attributes['accentColor'] ?? '#0f434f';
+
+error_log(print_r($attributes, true));
+
+// Build CSS classes
+$classes = array('advanced-sidebar-nav', 'advanced-sidebar-nav-' . $theme);
+$wrapper_attributes = get_block_wrapper_attributes(array(
+	'class' => implode(' ', $classes),
+	'style' => !empty($accentColor) ? '--accent-color: ' . esc_attr($accentColor) . ';' : ''
+));
 ?>
-<p <?php echo get_block_wrapper_attributes(); ?>>
-	<?php esc_html_e( 'Advanced Sidebar Nav – hello from a dynamic block!', 'advanced-sidebar-nav' ); ?>
-</p>
+
+<div <?php echo $wrapper_attributes; ?>>
+	<?php if (!empty($title)): ?>
+		<h3 class="advanced-sidebar-nav-title"><?php echo esc_html($title); ?></h3>
+	<?php endif; ?>
+
+	<?php if (!empty($menu)): ?>
+		<?php
+		$nav_menu = wp_nav_menu(array(
+			'menu' => $menu,
+			'menu_class' => 'advanced-sidebar-menu',
+			'container_class' => 'advanced-sidebar-nav-container',
+			'echo' => false,
+		));
+
+		if ($nav_menu) {
+			echo $nav_menu;
+		} else {
+			echo '<p>' . __('No menu found. Please select a valid menu.', 'advanced-sidebar-nav') . '</p>';
+		}
+		?>
+	<?php else: ?>
+		<p><?php _e('Please select a menu from the block settings.', 'advanced-sidebar-nav'); ?></p>
+	<?php endif; ?>
+</div>
