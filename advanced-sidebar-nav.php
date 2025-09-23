@@ -40,8 +40,23 @@ final class Advanced_Sidebar_Nav {
 
 	// register assets
 	public function enqueue_scripts() {
-		wp_register_style( 'advanced-sidebar-nav', plugin_dir_url( __FILE__ ) . 'assets/advanced-sidebar-nav.css' );
-		wp_register_script( 'advanced-sidebar-nav', plugin_dir_url( __FILE__ ) . 'assets/advanced-sidebar-nav.js' );
+		// Load asset file for proper dependency management
+		$asset_file = plugin_dir_path( __FILE__ ) . 'assets/style.asset.php';
+		$asset = file_exists( $asset_file ) ? require $asset_file : array( 'dependencies' => array(), 'version' => '1.1.0' );
+		
+		wp_register_style( 
+			'advanced-sidebar-nav', 
+			plugin_dir_url( __FILE__ ) . 'assets/style.css',
+			$asset['dependencies'],
+			$asset['version']
+		);
+		
+		wp_register_script( 
+			'advanced-sidebar-nav', 
+			plugin_dir_url( __FILE__ ) . 'assets/script.js',
+			array( 'jquery' ),
+			'1.1.0'
+		);
 	}
 
 	// register wp widget
