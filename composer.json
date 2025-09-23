@@ -1,0 +1,17 @@
+{
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"wp-coding-standards/wpcs": "^3.0"
+	},
+	"scripts": {
+		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml --extensions=php ./blocks advanced-sidebar-nav.php",
+		"phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml --extensions=php ./blocks advanced-sidebar-nav.php",
+		"update-deps": "composer update --with-dependencies",
+		"check-updates": "composer outdated"
+	}
+}

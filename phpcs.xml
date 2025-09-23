@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="Custom WordPress Coding Standards">
+	<!-- Use the default WordPress Coding Standards -->
+	<rule ref="WordPress"/>
+
+	<!-- Exclude specific WPCS rules -->
+	<rule ref="WordPress">
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+
+	<!-- Enforce short array syntax -->
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+</ruleset>
