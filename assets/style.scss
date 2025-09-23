@@ -130,7 +130,7 @@
         }
 
         ul {
-            background-color: #dd4b39;
+            background-color: var(--accent-color);
 
             ul {
                 background-color: rgba($color: #000000, $alpha: 0.1);

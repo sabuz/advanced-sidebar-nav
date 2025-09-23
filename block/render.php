@@ -20,10 +20,10 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		<?php
 		$nav_menu = wp_nav_menu(
 			[
-				'menu'            => $menu_slug,
-				'menu_class'      => 'advanced-sidebar-menu',
-				'container_class' => 'advanced-sidebar-nav-container',
-				'echo'            => false,
+				'menu'       => $menu_slug,
+				'menu_class' => 'advanced-sidebar-menu',
+				'container'  => false,
+				'echo'       => false,
 			]
 		);
 

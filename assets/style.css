@@ -94,7 +94,7 @@
   background-color: rgba(255, 255, 255, 0.8);
 }
 .advanced-sidebar-nav.advanced-sidebar-nav-default ul {
-  background-color: #dd4b39;
+  background-color: var(--accent-color);
 }
 .advanced-sidebar-nav.advanced-sidebar-nav-default ul ul {
   background-color: rgba(0, 0, 0, 0.1);
