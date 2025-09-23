@@ -34,8 +34,8 @@ final class Advanced_Sidebar_Nav {
 
 	// load required files
 	public function load_files() {
-		require_once plugin_dir_path( __FILE__ ) . 'inc/options.php';
-		require_once plugin_dir_path( __FILE__ ) . 'inc/widget.php';
+		require_once plugin_dir_path( __FILE__ ) . 'widget/options.php';
+		require_once plugin_dir_path( __FILE__ ) . 'widget/widget.php';
 	}
 
 	// register assets
@@ -51,7 +51,7 @@ final class Advanced_Sidebar_Nav {
 
 	// Simple block registration - no manifest needed for single block
 	public function register_block() {
-		register_block_type( __DIR__ . '/blocks/advanced-sidebar-nav' );
+		register_block_type( __DIR__ . '/block' );
 	}
 }
 

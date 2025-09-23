@@ -3,8 +3,8 @@ const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 module.exports = {
 	...defaultConfig,
 	entry: {
-		'blocks/advanced-sidebar-nav/build/index': './blocks/advanced-sidebar-nav/src/index.js',
-		'blocks/advanced-sidebar-nav/build/view': './blocks/advanced-sidebar-nav/src/view.js',
+		'block/build/index': './block/src/index.js',
+		'block/build/view': './block/src/view.js',
 	},
 	output: {
 		path: __dirname,
