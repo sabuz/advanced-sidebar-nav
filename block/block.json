@@ -30,8 +30,14 @@
 	},
 	"textdomain": "advanced-sidebar-nav",
 	"editorScript": "file:./build/index.js",
-	"editorStyle": "file:./build/index.css",
-	"style": "file:./build/style-index.css",
+	"editorStyle": [
+		"file:./build/index.css",
+		"advanced-sidebar-nav"
+	],
+	"style": [
+		"file:./build/style-index.css",
+		"advanced-sidebar-nav"
+	],
 	"render": "file:./render.php",
 	"viewScript": "file:./build/view.js"
 }

@@ -19,6 +19,7 @@ final class Advanced_Sidebar_Nav {
 
 		// actions
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_scripts' ] );
 		add_action( 'widgets_init', [ $this, 'register_widget' ] );
 		add_action( 'init', [ $this, 'register_block' ] );
 	}
