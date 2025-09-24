@@ -64,6 +64,8 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}, [menus]);
 
+	console.log(menus);
+
 	return (
 		<>
 			<InspectorControls>
@@ -101,7 +103,10 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 
 					{/* Accent Color */}
-					<BaseControl label={__("Accent Color", "advanced-sidebar-nav")}>
+					<BaseControl
+						__nextHasNoMarginBottom
+						label={__("Accent Color", "advanced-sidebar-nav")}
+					>
 						<ColorPicker
 							color={accentColor}
 							onChange={(value) => setAttributes({ accentColor: value })}
