@@ -142,7 +142,9 @@ export default function Edit({ attributes, setAttributes }) {
 				const li = a.closest("li");
 				if (!li) return;
 				const depth = getDepth(li);
-				a.style.paddingLeft = (depth + 2) * 20 + "px";
+				if (depth > 0) {
+					a.style.setProperty("padding-left", depth * 40 + "px", "important");
+				}
 			});
 		}
 
@@ -288,7 +290,10 @@ export default function Edit({ attributes, setAttributes }) {
 						</p>
 					</div>
 				) : (
-					<div dangerouslySetInnerHTML={{ __html: menuHtml }} ref={wrapperRef} />
+					<div
+						dangerouslySetInnerHTML={{ __html: menuHtml }}
+						ref={wrapperRef}
+					/>
 				)}
 			</div>
 		</>
