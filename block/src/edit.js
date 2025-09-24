@@ -20,8 +20,8 @@ import {
 	BaseControl,
 } from "@wordpress/components";
 import { useSelect } from "@wordpress/data";
-import { useState, useEffect } from "@wordpress/element";
-import ServerSideRender from "@wordpress/server-side-render";
+import { useState, useEffect, useRef } from "@wordpress/element";
+import apiFetch from "@wordpress/api-fetch";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -48,6 +48,10 @@ export default function Edit({ attributes, setAttributes }) {
 	}, []);
 
 	const [menuOptions, setMenuOptions] = useState([]);
+	const [menuHtml, setMenuHtml] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const originalMenuHtmlRef = useRef('');
 
 	useEffect(() => {
 		if (menus) {
@@ -64,7 +68,56 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}, [menus]);
 
-	console.log(menus);
+	// Fetch menu HTML when menu or theme changes
+	useEffect(() => {
+		if (!menu) {
+			setMenuHtml('');
+			setError(null);
+			return;
+		}
+
+		fetchMenuHtml();
+	}, [menu, theme]);
+
+	// Update accent color by modifying the HTML directly
+	useEffect(() => {
+		if (originalMenuHtmlRef.current && accentColor) {
+			// Update the style attribute in the HTML string
+			const updatedHtml = originalMenuHtmlRef.current.replace(
+				/style="[^"]*"/,
+				`style="--accent-color: ${accentColor};"`
+			);
+			setMenuHtml(updatedHtml);
+		}
+	}, [accentColor]);
+
+	const fetchMenuHtml = () => {
+		setIsLoading(true);
+		setError(null);
+
+		const params = new URLSearchParams({
+			theme: theme || 'default',
+			accent_color: accentColor || '#0f434f',
+		});
+
+		apiFetch({
+			path: `/advanced-sidebar-nav/v1/menu/${menu}?${params}`,
+		})
+			.then((response) => {
+				// Store original HTML in ref
+				originalMenuHtmlRef.current = response.html;
+				setMenuHtml(response.html);
+				setError(null);
+			})
+			.catch((err) => {
+				setError(err.message || 'Failed to load menu');
+				setMenuHtml('');
+				originalMenuHtmlRef.current = '';
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
+	};
 
 	return (
 		<>
@@ -116,14 +169,9 @@ export default function Edit({ attributes, setAttributes }) {
 					</BaseControl>
 				</PanelBody>
 			</InspectorControls>
-			 {/* Block preview */}
+			{/* Block preview */}
 			<div {...useBlockProps()}>
-				{menu ? (
-					<ServerSideRender
-						block="advanced-sidebar-nav/advanced-sidebar-nav"
-						attributes={attributes}
-					/>
-				) : (
+				{!menu ? (
 					<div className="advanced-sidebar-nav-placeholder">
 						<p>
 							{__(
@@ -132,6 +180,16 @@ export default function Edit({ attributes, setAttributes }) {
 							)}
 						</p>
 					</div>
+				) : isLoading ? (
+					<div className="advanced-sidebar-nav-loading">
+						<p>{__("Loading menu...", "advanced-sidebar-nav")}</p>
+					</div>
+				) : error ? (
+					<div className="advanced-sidebar-nav-error">
+						<p>{__("Error loading menu: ", "advanced-sidebar-nav")}{error}</p>
+					</div>
+				) : (
+					<div dangerouslySetInnerHTML={{ __html: menuHtml }} />
 				)}
 			</div>
 		</>

@@ -21,3 +21,31 @@
 	margin: 0;
 	font-style: italic;
 }
+
+.advanced-sidebar-nav-loading {
+	text-align: center;
+	padding: 20px;
+	color: #666;
+	background: #f0f8ff;
+	border: 1px solid #b3d9ff;
+	border-radius: 4px;
+}
+
+.advanced-sidebar-nav-loading p {
+	margin: 0;
+	font-style: italic;
+}
+
+.advanced-sidebar-nav-error {
+	text-align: center;
+	padding: 20px;
+	color: #d63638;
+	background: #fcf0f1;
+	border: 1px solid #f0a0a0;
+	border-radius: 4px;
+}
+
+.advanced-sidebar-nav-error p {
+	margin: 0;
+	font-style: italic;
+}
