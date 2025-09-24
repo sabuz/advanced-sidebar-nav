@@ -30,6 +30,49 @@ import apiFetch from "@wordpress/api-fetch";
  */
 import "./editor.scss";
 
+// helpers for smooth submenu expand/collapse
+const slideDown = (el, duration = 300) => {
+	el.style.removeProperty("display");
+	let display = window.getComputedStyle(el).display;
+	if (display === "none") {
+		el.style.display = "block";
+	}
+	const height = el.scrollHeight;
+	el.style.overflow = "hidden";
+	el.style.height = "0px";
+	el.style.transition = `height ${duration}ms ease`;
+	// allow styles to apply before change
+	requestAnimationFrame(() => {
+		el.style.height = height + "px";
+	});
+	const end = () => {
+		el.removeEventListener("transitionend", end);
+		el.style.removeProperty("height");
+		el.style.removeProperty("overflow");
+		el.style.removeProperty("transition");
+	};
+	el.addEventListener("transitionend", end);
+};
+
+const slideUp = (el, duration = 300) => {
+	const height = el.scrollHeight;
+	el.style.overflow = "hidden";
+	el.style.height = height + "px";
+	el.style.transition = `height ${duration}ms ease`;
+	requestAnimationFrame(() => {
+		el.style.height = "0px";
+	});
+	const end = () => {
+		el.removeEventListener("transitionend", end);
+		el.style.display = "none";
+		el.style.removeProperty("height");
+		el.style.removeProperty("overflow");
+		el.style.removeProperty("transition");
+	};
+	el.addEventListener("transitionend", end);
+};
+// ------------------------------------------- //
+
 function getDepth(li) {
 	let depth = 0;
 	let current = li.parentElement;
@@ -87,11 +130,11 @@ function initNav(container) {
 			);
 			if (isOpen) {
 				link.classList.add("advanced-sidebar-nav-menu-open");
-				submenu.style.display = "block";
+				slideDown(submenu, 300);
 				toggle.setAttribute("aria-expanded", "true");
 			} else {
 				link.classList.remove("advanced-sidebar-nav-menu-open");
-				submenu.style.display = "none";
+				slideUp(submenu, 300);
 				toggle.setAttribute("aria-expanded", "false");
 			}
 		}
