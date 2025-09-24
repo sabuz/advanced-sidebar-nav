@@ -14,7 +14,6 @@ import { __ } from "@wordpress/i18n";
 import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import {
 	PanelBody,
-	TextControl,
 	SelectControl,
 	ColorPicker,
 	BaseControl,
@@ -30,6 +29,87 @@ import apiFetch from "@wordpress/api-fetch";
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import "./editor.scss";
+
+function getDepth(li) {
+	let depth = 0;
+	let current = li.parentElement;
+	while (current && !current.classList.contains("advanced-sidebar-nav")) {
+		if (current.tagName === "UL") depth++;
+		current = current.parentElement;
+	}
+	return Math.max(0, depth - 1);
+}
+
+function setIndentation(root) {
+	const anchors = root.querySelectorAll("ul li a");
+	anchors.forEach((a) => {
+		const li = a.closest("li");
+		if (!li) return;
+		const depth = getDepth(li);
+		if (depth > 0) {
+			a.style.setProperty("padding-left", depth * 40 + "px", "important");
+		}
+	});
+}
+
+function initNav(container) {
+	const items = container.querySelectorAll("li.menu-item-has-children");
+	items.forEach((item) => {
+		const link = item.querySelector(":scope > a");
+		const submenu = item.querySelector(":scope > ul");
+		if (!link || !submenu) return;
+
+		// Avoid duplicates
+		if (link.querySelector(".advanced-sidebar-nav-toggle")) return;
+
+		const toggle = document.createElement("span");
+		toggle.className = "advanced-sidebar-nav-toggle";
+		toggle.setAttribute("role", "button");
+		toggle.setAttribute("tabindex", "0");
+		toggle.setAttribute("aria-expanded", "false");
+		link.appendChild(toggle);
+
+		const initiallyOpen =
+			window.getComputedStyle(submenu).display === "block" ||
+			item.classList.contains("current-menu-ancestor");
+		if (initiallyOpen) {
+			toggle.classList.add("advanced-sidebar-nav-toggle-open");
+			link.classList.add("advanced-sidebar-nav-menu-open");
+			toggle.setAttribute("aria-expanded", "true");
+			submenu.style.display = "block";
+		} else {
+			submenu.style.display = "none";
+		}
+
+		function toggleSubmenu() {
+			const isOpen = toggle.classList.toggle(
+				"advanced-sidebar-nav-toggle-open",
+			);
+			if (isOpen) {
+				link.classList.add("advanced-sidebar-nav-menu-open");
+				submenu.style.display = "block";
+				toggle.setAttribute("aria-expanded", "true");
+			} else {
+				link.classList.remove("advanced-sidebar-nav-menu-open");
+				submenu.style.display = "none";
+				toggle.setAttribute("aria-expanded", "false");
+			}
+		}
+
+		toggle.addEventListener("click", (e) => {
+			e.preventDefault();
+			toggleSubmenu();
+		});
+		toggle.addEventListener("keydown", (e) => {
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				toggleSubmenu();
+			}
+		});
+	});
+
+	setIndentation(container);
+}
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -52,6 +132,7 @@ export default function Edit({ attributes, setAttributes }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const originalMenuHtmlRef = useRef("");
+	const wrapperRef = useRef(null);
 
 	useEffect(() => {
 		if (menus) {
@@ -119,93 +200,9 @@ export default function Edit({ attributes, setAttributes }) {
 			});
 	};
 
-	const wrapperRef = useRef(null);
-
-	// Initialize submenu toggle behavior inside the editor preview (scoped to this block)
+	// Initialize submenu toggle behavior inside the editor preview
 	useEffect(() => {
-		// Only run when a menu is selected
 		if (!menu) return;
-
-		function getDepth(li) {
-			let depth = 0;
-			let current = li.parentElement;
-			while (current && !current.classList.contains("advanced-sidebar-nav")) {
-				if (current.tagName === "UL") depth++;
-				current = current.parentElement;
-			}
-			return Math.max(0, depth - 1);
-		}
-
-		function setIndentation(root) {
-			const anchors = root.querySelectorAll("ul li a");
-			anchors.forEach((a) => {
-				const li = a.closest("li");
-				if (!li) return;
-				const depth = getDepth(li);
-				if (depth > 0) {
-					a.style.setProperty("padding-left", depth * 40 + "px", "important");
-				}
-			});
-		}
-
-		function initNav(container) {
-			const items = container.querySelectorAll("li.menu-item-has-children");
-			items.forEach((item) => {
-				const link = item.querySelector(":scope > a");
-				const submenu = item.querySelector(":scope > ul");
-				if (!link || !submenu) return;
-
-				// Avoid duplicates
-				if (link.querySelector(".advanced-sidebar-nav-toggle")) return;
-
-				const toggle = document.createElement("span");
-				toggle.className = "advanced-sidebar-nav-toggle";
-				toggle.setAttribute("role", "button");
-				toggle.setAttribute("tabindex", "0");
-				toggle.setAttribute("aria-expanded", "false");
-				link.appendChild(toggle);
-
-				const initiallyOpen =
-					window.getComputedStyle(submenu).display === "block" ||
-					item.classList.contains("current-menu-ancestor");
-				if (initiallyOpen) {
-					toggle.classList.add("advanced-sidebar-nav-toggle-open");
-					link.classList.add("advanced-sidebar-nav-menu-open");
-					toggle.setAttribute("aria-expanded", "true");
-					submenu.style.display = "block";
-				} else {
-					submenu.style.display = "none";
-				}
-
-				function toggleSubmenu() {
-					const isOpen = toggle.classList.toggle(
-						"advanced-sidebar-nav-toggle-open",
-					);
-					if (isOpen) {
-						link.classList.add("advanced-sidebar-nav-menu-open");
-						submenu.style.display = "block";
-						toggle.setAttribute("aria-expanded", "true");
-					} else {
-						link.classList.remove("advanced-sidebar-nav-menu-open");
-						submenu.style.display = "none";
-						toggle.setAttribute("aria-expanded", "false");
-					}
-				}
-
-				toggle.addEventListener("click", (e) => {
-					e.preventDefault();
-					toggleSubmenu();
-				});
-				toggle.addEventListener("keydown", (e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						toggleSubmenu();
-					}
-				});
-			});
-
-			setIndentation(container);
-		}
 
 		const timer = setTimeout(() => {
 			const wrapper = wrapperRef.current;
