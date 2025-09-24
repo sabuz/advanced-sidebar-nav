@@ -48,10 +48,10 @@ export default function Edit({ attributes, setAttributes }) {
 	}, []);
 
 	const [menuOptions, setMenuOptions] = useState([]);
-	const [menuHtml, setMenuHtml] = useState('');
+	const [menuHtml, setMenuHtml] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const originalMenuHtmlRef = useRef('');
+	const originalMenuHtmlRef = useRef("");
 
 	useEffect(() => {
 		if (menus) {
@@ -71,7 +71,7 @@ export default function Edit({ attributes, setAttributes }) {
 	// Fetch menu HTML when menu or theme changes
 	useEffect(() => {
 		if (!menu) {
-			setMenuHtml('');
+			setMenuHtml("");
 			setError(null);
 			return;
 		}
@@ -85,7 +85,7 @@ export default function Edit({ attributes, setAttributes }) {
 			// Update the style attribute in the HTML string
 			const updatedHtml = originalMenuHtmlRef.current.replace(
 				/style="[^"]*"/,
-				`style="--accent-color: ${accentColor};"`
+				`style="--accent-color: ${accentColor};"`,
 			);
 			setMenuHtml(updatedHtml);
 		}
@@ -96,8 +96,8 @@ export default function Edit({ attributes, setAttributes }) {
 		setError(null);
 
 		const params = new URLSearchParams({
-			theme: theme || 'default',
-			accent_color: accentColor || '#0f434f',
+			theme: theme || "default",
+			accent_color: accentColor || "#0f434f",
 		});
 
 		apiFetch({
@@ -110,14 +110,110 @@ export default function Edit({ attributes, setAttributes }) {
 				setError(null);
 			})
 			.catch((err) => {
-				setError(err.message || 'Failed to load menu');
-				setMenuHtml('');
-				originalMenuHtmlRef.current = '';
+				setError(err.message || "Failed to load menu");
+				setMenuHtml("");
+				originalMenuHtmlRef.current = "";
 			})
 			.finally(() => {
 				setIsLoading(false);
 			});
 	};
+
+	const wrapperRef = useRef(null);
+
+	// Initialize submenu toggle behavior inside the editor preview (scoped to this block)
+	useEffect(() => {
+		// Only run when a menu is selected
+		if (!menu) return;
+
+		function getDepth(li) {
+			let depth = 0;
+			let current = li.parentElement;
+			while (current && !current.classList.contains("advanced-sidebar-nav")) {
+				if (current.tagName === "UL") depth++;
+				current = current.parentElement;
+			}
+			return Math.max(0, depth - 1);
+		}
+
+		function setIndentation(root) {
+			const anchors = root.querySelectorAll("ul li a");
+			anchors.forEach((a) => {
+				const li = a.closest("li");
+				if (!li) return;
+				const depth = getDepth(li);
+				a.style.paddingLeft = (depth + 2) * 20 + "px";
+			});
+		}
+
+		function initNav(container) {
+			const items = container.querySelectorAll("li.menu-item-has-children");
+			items.forEach((item) => {
+				const link = item.querySelector(":scope > a");
+				const submenu = item.querySelector(":scope > ul");
+				if (!link || !submenu) return;
+
+				// Avoid duplicates
+				if (link.querySelector(".advanced-sidebar-nav-toggle")) return;
+
+				const toggle = document.createElement("span");
+				toggle.className = "advanced-sidebar-nav-toggle";
+				toggle.setAttribute("role", "button");
+				toggle.setAttribute("tabindex", "0");
+				toggle.setAttribute("aria-expanded", "false");
+				link.appendChild(toggle);
+
+				const initiallyOpen =
+					window.getComputedStyle(submenu).display === "block" ||
+					item.classList.contains("current-menu-ancestor");
+				if (initiallyOpen) {
+					toggle.classList.add("advanced-sidebar-nav-toggle-open");
+					link.classList.add("advanced-sidebar-nav-menu-open");
+					toggle.setAttribute("aria-expanded", "true");
+					submenu.style.display = "block";
+				} else {
+					submenu.style.display = "none";
+				}
+
+				function toggleSubmenu() {
+					const isOpen = toggle.classList.toggle(
+						"advanced-sidebar-nav-toggle-open",
+					);
+					if (isOpen) {
+						link.classList.add("advanced-sidebar-nav-menu-open");
+						submenu.style.display = "block";
+						toggle.setAttribute("aria-expanded", "true");
+					} else {
+						link.classList.remove("advanced-sidebar-nav-menu-open");
+						submenu.style.display = "none";
+						toggle.setAttribute("aria-expanded", "false");
+					}
+				}
+
+				toggle.addEventListener("click", (e) => {
+					e.preventDefault();
+					toggleSubmenu();
+				});
+				toggle.addEventListener("keydown", (e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						toggleSubmenu();
+					}
+				});
+			});
+
+			setIndentation(container);
+		}
+
+		const timer = setTimeout(() => {
+			const wrapper = wrapperRef.current;
+			if (!wrapper) return;
+			const root = wrapper.querySelector(".advanced-sidebar-nav");
+			if (root) initNav(root);
+		}, 100);
+
+		return () => clearTimeout(timer);
+	}, [menu, theme, accentColor]);
 
 	return (
 		<>
@@ -186,10 +282,13 @@ export default function Edit({ attributes, setAttributes }) {
 					</div>
 				) : error ? (
 					<div className="advanced-sidebar-nav-error">
-						<p>{__("Error loading menu: ", "advanced-sidebar-nav")}{error}</p>
+						<p>
+							{__("Error loading menu: ", "advanced-sidebar-nav")}
+							{error}
+						</p>
 					</div>
 				) : (
-					<div dangerouslySetInnerHTML={{ __html: menuHtml }} />
+					<div dangerouslySetInnerHTML={{ __html: menuHtml }} ref={wrapperRef} />
 				)}
 			</div>
 		</>
