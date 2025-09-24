@@ -12,7 +12,13 @@ import { __ } from "@wordpress/i18n";
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
 import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
-import { PanelBody, TextControl, SelectControl } from "@wordpress/components";
+import {
+	PanelBody,
+	TextControl,
+	SelectControl,
+	ColorPicker,
+	BaseControl,
+} from "@wordpress/components";
 import { useSelect } from "@wordpress/data";
 import { useState, useEffect } from "@wordpress/element";
 import ServerSideRender from "@wordpress/server-side-render";
@@ -89,24 +95,23 @@ export default function Edit({ attributes, setAttributes }) {
 							{
 								label: __("Default", "advanced-sidebar-nav"),
 								value: "default",
-							}
+							},
 						]}
 						onChange={(value) => setAttributes({ theme: value })}
 					/>
 
 					{/* Accent Color */}
-					<TextControl
-						__next40pxDefaultSize
-						__nextHasNoMarginBottom
-						label={__("Accent Color", "advanced-sidebar-nav")}
-						type="text"
-						value={accentColor || "#0f434f"}
-						onChange={(value) => setAttributes({ accentColor: value })}
-					/>
+					<BaseControl label={__("Accent Color", "advanced-sidebar-nav")}>
+						<ColorPicker
+							color={accentColor}
+							onChange={(value) => setAttributes({ accentColor: value })}
+							enableAlpha
+							defaultValue="#000"
+						/>
+					</BaseControl>
 				</PanelBody>
 			</InspectorControls>
-
-			{/* Block preview */}
+			 {/* Block preview */}
 			<div {...useBlockProps()}>
 				{menu ? (
 					<ServerSideRender
@@ -115,7 +120,12 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 				) : (
 					<div className="advanced-sidebar-nav-placeholder">
-						<p>{__("Please select a menu from the block settings.", "advanced-sidebar-nav")}</p>
+						<p>
+							{__(
+								"Please select a menu from the block settings.",
+								"advanced-sidebar-nav",
+							)}
+						</p>
 					</div>
 				)}
 			</div>
