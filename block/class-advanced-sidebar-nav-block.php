@@ -161,20 +161,27 @@ class Advanced_Sidebar_Nav_Block {
 	 * @return void
 	 */
 	private function register_block_assets() {
+		// Load asset file for proper dependency management.
+		$asset_file = ADVANCED_SIDEBAR_NAV_PLUGIN_DIR . 'block/build/index.asset.php';
+		$asset      = file_exists( $asset_file ) ? require $asset_file : [
+			'dependencies' => [],
+			'version'      => ADVANCED_SIDEBAR_NAV_VERSION,
+		];
+
 		// Register block editor styles.
 		wp_register_style(
 			'advanced-sidebar-nav-block-editor',
 			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/index.css',
 			[ 'advanced-sidebar-nav' ],
-			ADVANCED_SIDEBAR_NAV_VERSION
+			$asset['version']
 		);
 
 		// Register block editor scripts.
 		wp_register_script(
 			'advanced-sidebar-nav-block-editor',
 			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/index.js',
-			[ 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n' ],
-			ADVANCED_SIDEBAR_NAV_VERSION,
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 	}
