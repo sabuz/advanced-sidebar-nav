@@ -1,9 +1,11 @@
 /**
- * Registers a new block provided a unique name and an object defining its behavior.
+ * Block editor JavaScript for Advanced Sidebar Nav.
+ * 
+ * This file is loaded by the block editor but the block registration
+ * is handled in PHP via the Advanced_Sidebar_Nav_Block class.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-import { registerBlockType } from '@wordpress/blocks';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -18,16 +20,8 @@ import './style.scss';
  * Internal dependencies
  */
 import Edit from './edit';
-import metadata from '../block.json';
 
 /**
- * Every block starts by registering a new block type definition.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
+ * Note: Block registration is handled in PHP via Advanced_Sidebar_Nav_Block class.
+ * This file only contains the editor interface components.
  */
-registerBlockType( metadata.name, {
-	/**
-	 * @see ./edit.js
-	 */
-	edit: Edit,
-} );
