@@ -54,7 +54,9 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 	}
 
 	public function form( $instance ) {
-		echo Advanced_Sidebar_Nav_Widget_Opts::text(
+		global $kira_widget_options_framework;
+
+		$kira_widget_options_framework->text(
 			[
 				'name'        => esc_attr( $this->get_field_name( 'title' ) ),
 				'label'       => 'Title:',
@@ -63,7 +65,7 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 			]
 		);
 
-		echo Advanced_Sidebar_Nav_Widget_Opts::select(
+		$kira_widget_options_framework->select(
 			[
 				'name'        => esc_attr( $this->get_field_name( 'menu' ) ),
 				'label'       => 'Select Menu:',
@@ -73,7 +75,7 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 			]
 		);
 
-		echo Advanced_Sidebar_Nav_Widget_Opts::select(
+		$kira_widget_options_framework->select(
 			[
 				'name'        => esc_attr( $this->get_field_name( 'theme' ) ),
 				'label'       => 'Select Theme:',
@@ -85,7 +87,7 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 			]
 		);
 
-		echo Advanced_Sidebar_Nav_Widget_Opts::color(
+		$kira_widget_options_framework->color(
 			[
 				'name'        => esc_attr( $this->get_field_name( 'color' ) ),
 				'label'       => 'Accent Color:',
