@@ -30,57 +30,7 @@ class Advanced_Sidebar_Nav_Block {
 	 * @since 1.1
 	 */
 	public function __construct() {
-		add_action( 'init', [ $this, 'maybe_register_block' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
-	}
-
-	/**
-	 * Conditionally register the block based on WordPress version.
-	 *
-	 * Only registers the block if WordPress version is 5.8 or higher,
-	 * where block editor widget functionality is available.
-	 *
-	 * @since 1.1
-	 * @return void
-	 */
-	public function maybe_register_block() {
-		// Check if WordPress version supports block editor widgets.
-		if ( ! $this->is_block_editor_widget_supported() ) {
-			return;
-		}
-
-		// Register the block.
-		$this->register_block();
-	}
-
-	/**
-	 * Check if block editor widget functionality is supported.
-	 *
-	 * Determines if the current WordPress version supports block editor widgets
-	 * by checking the version and required functions.
-	 *
-	 * @since 1.1
-	 * @return bool True if block editor widgets are supported, false otherwise.
-	 */
-	private function is_block_editor_widget_supported() {
-		global $wp_version;
-
-		// Check WordPress version.
-		if ( version_compare( $wp_version, ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS, '<' ) ) {
-			return false;
-		}
-
-		// Check if required functions exist.
-		if ( ! function_exists( 'register_block_type' ) ) {
-			return false;
-		}
-
-		// Check if block editor is available.
-		if ( ! function_exists( 'wp_enqueue_block_editor_assets' ) ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -92,7 +42,7 @@ class Advanced_Sidebar_Nav_Block {
 	 * @since 1.1
 	 * @return void
 	 */
-	private function register_block() {
+	public function register_block() {
 		// Register block type.
 		register_block_type(
 			'advanced-sidebar-nav/advanced-sidebar-nav',

@@ -1,26 +1,44 @@
 <?php
 /**
- * Plugin Name: Advanced Sidebar Nav
- * Description: The best way to display navigation menus on sidebar, no matter how many depth!
- * Version: 1.1
- * Author: Nazmul Sabuz
- * Author URI: https://profiles.wordpress.org/nazsabuz/
- * License: GPL2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin Name:       Advanced Sidebar Nav
+ * Plugin URI:        https://wordpress.org/plugins/advanced-sidebar-nav/
+ * Description:       The best way to display navigation menus on sidebar, no matter how many depth! Features both legacy widget and modern block editor support.
+ * Version:           2.0
+ * Requires at least: 4.0
+ * Requires PHP:      5.6.20
+ * Author:            Nazmul Sabuz
+ * Author URI:        https://profiles.wordpress.org/nazsabuz/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       advanced-sidebar-nav
+ * Domain Path:       /languages
+ *
+ * @package           Advanced_Sidebar_Nav
+ * @version           2.0
+ * @link              https://wordpress.org/plugins/advanced-sidebar-nav/
  */
 
-// Prevent direct access.
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 // Define plugin constants.
-define( 'ADVANCED_SIDEBAR_NAV_VERSION', '1.1' );
-define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_FILE', __FILE__ );
+define( 'ADVANCED_SIDEBAR_NAV_VERSION', '2.0' );
 define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS', '5.8' );
 
+/**
+ * Load the main plugin class.
+ *
+ * @since 1.0.0
+ */
 require_once ADVANCED_SIDEBAR_NAV_PLUGIN_DIR . 'includes/class-advanced-sidebar-nav.php';
 
+/**
+ * Initialize the plugin.
+ *
+ * @since 1.0.0
+ */
 Advanced_Sidebar_Nav::init();
