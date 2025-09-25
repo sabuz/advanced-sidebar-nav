@@ -18,7 +18,7 @@
 		},
 		"accentColor": {
 			"type": "string",
-			"default": "#dd102d"
+			"default": "#0F434F"
 		}
 	},
 	"supports": {
