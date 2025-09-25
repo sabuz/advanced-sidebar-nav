@@ -301,8 +301,8 @@ export default function Edit({ attributes, setAttributes }) {
 						<ColorPicker
 							color={accentColor}
 							onChange={(value) => setAttributes({ accentColor: value })}
-							enableAlpha
-							defaultValue="#000"
+							enableAlpha={false}
+							defaultValue="#0f434f"
 						/>
 					</BaseControl>
 				</PanelBody>
