@@ -1,0 +1,258 @@
+<?php
+/**
+ * Block Registration Class
+ *
+ * Handles the registration of the Advanced Sidebar Nav block for WordPress 5.8+
+ * where the block editor widget functionality is available.
+ *
+ * @package Advanced_Sidebar_Nav
+ * @since 1.1
+ * @author Nazmul Sabuz
+ * @version 1.1
+ * @license GPL-2.0
+ */
+
+/**
+ * Block Registration Class
+ *
+ * This class handles the conditional registration of the Advanced Sidebar Nav block
+ * based on WordPress version and block editor widget availability.
+ *
+ * @package Advanced_Sidebar_Nav
+ * @since 1.1
+ */
+class Advanced_Sidebar_Nav_Block_Registration {
+
+	/**
+	 * Minimum WordPress version required for block editor widgets.
+	 *
+	 * @since 1.1
+	 * @var string
+	 */
+	const MIN_WP_VERSION = '5.8';
+
+	/**
+	 * Block registration constructor.
+	 *
+	 * @since 1.1
+	 */
+	public function __construct() {
+		add_action( 'init', [ $this, 'maybe_register_block' ] );
+	}
+
+	/**
+	 * Conditionally register the block based on WordPress version.
+	 *
+	 * Only registers the block if WordPress version is 5.8 or higher,
+	 * where block editor widget functionality is available.
+	 *
+	 * @since 1.1
+	 * @return void
+	 */
+	public function maybe_register_block() {
+		// Check if WordPress version supports block editor widgets.
+		if ( ! $this->is_block_editor_widget_supported() ) {
+			return;
+		}
+
+		// Register the block.
+		$this->register_block();
+	}
+
+	/**
+	 * Check if block editor widget functionality is supported.
+	 *
+	 * Determines if the current WordPress version supports block editor widgets
+	 * by checking the version and required functions.
+	 *
+	 * @since 1.1
+	 * @return bool True if block editor widgets are supported, false otherwise.
+	 */
+	private function is_block_editor_widget_supported() {
+		global $wp_version;
+
+		// Check WordPress version.
+		if ( version_compare( $wp_version, self::MIN_WP_VERSION, '<' ) ) {
+			return false;
+		}
+
+		// Check if required functions exist.
+		if ( ! function_exists( 'register_block_type' ) ) {
+			return false;
+		}
+
+		// Check if block editor is available.
+		if ( ! function_exists( 'wp_enqueue_block_editor_assets' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Register the Advanced Sidebar Nav block.
+	 *
+	 * Registers the block with WordPress and sets up all necessary
+	 * assets and functionality.
+	 *
+	 * @since 1.1
+	 * @return void
+	 */
+	private function register_block() {
+		// Register block type.
+		register_block_type(
+			'advanced-sidebar-nav/advanced-sidebar-nav',
+			[
+				'api_version'     => 3,
+				'title'           => __( 'Advanced Sidebar Nav', 'advanced-sidebar-nav' ),
+				'category'        => 'widgets',
+				'icon'            => 'menu',
+				'description'     => __( 'Display navigation menus in sidebar with advanced styling options.', 'advanced-sidebar-nav' ),
+				'render_callback' => [ $this, 'render_block' ],
+				'attributes'      => [
+					'menu'        => [
+						'type'    => 'string',
+						'default' => '',
+					],
+					'theme'       => [
+						'type'    => 'string',
+						'default' => 'default',
+					],
+					'accentColor' => [
+						'type'    => 'string',
+						'default' => '#0f434f',
+					],
+				],
+				'supports'        => [
+					'html'    => false,
+					'spacing' => [
+						'margin'  => true,
+						'padding' => true,
+					],
+				],
+				'editor_script'   => 'advanced-sidebar-nav-block-editor',
+				'editor_style'    => [
+					'advanced-sidebar-nav-block-editor',
+					'advanced-sidebar-nav',
+				],
+				'style'           => [
+					'advanced-sidebar-nav-block',
+					'advanced-sidebar-nav',
+				],
+				'view_script'     => 'advanced-sidebar-nav-block-view',
+			]
+		);
+
+		// Enqueue block assets.
+		$this->enqueue_block_assets();
+	}
+
+	/**
+	 * Render the Advanced Sidebar Nav block.
+	 *
+	 * Handles the server-side rendering of the block with proper
+	 * styling and menu output.
+	 *
+	 * @since 1.1
+	 * @param array $attributes Block attributes.
+	 * @return string Rendered block HTML.
+	 */
+	public function render_block( $attributes ) {
+		// Extract attributes with defaults.
+		$menu         = isset( $attributes['menu'] ) ? $attributes['menu'] : '';
+		$theme        = isset( $attributes['theme'] ) ? $attributes['theme'] : 'default';
+		$accent_color = isset( $attributes['accentColor'] ) ? $attributes['accentColor'] : '#0f434f';
+
+		// Return early if no menu is selected.
+		if ( empty( $menu ) ) {
+			return '<div class="advanced-sidebar-nav-block-placeholder">' .
+				__( 'Please select a menu to display.', 'advanced-sidebar-nav' ) .
+				'</div>';
+		}
+
+		// Build wrapper attributes.
+		$classes = [
+			'advanced-sidebar-nav',
+			'advanced-sidebar-nav-' . esc_attr( $theme ),
+			'advanced-sidebar-nav-block',
+		];
+
+		$wrapper_attributes = [
+			'class' => implode( ' ', $classes ),
+		];
+
+		// Add CSS custom property for accent color.
+		if ( ! empty( $accent_color ) ) {
+			$wrapper_attributes['style'] = '--accent-color: ' . esc_attr( $accent_color ) . ';';
+		}
+
+		// Get menu HTML.
+		$menu_output = wp_nav_menu(
+			[
+				'menu'            => esc_attr( $menu ),
+				'menu_class'      => 'advanced-sidebar-menu',
+				'container_class' => 'advanced-sidebar-nav-container',
+				'container'       => false,
+				'echo'            => false,
+			]
+		);
+
+		// Return early if menu not found.
+		if ( ! $menu_output ) {
+			return '<div class="advanced-sidebar-nav-block-error">' .
+				__( 'Menu not found. Please check your menu selection.', 'advanced-sidebar-nav' ) .
+				'</div>';
+		}
+
+		// Build final HTML.
+		$html  = '<div ' . get_block_wrapper_attributes( $wrapper_attributes ) . '>';
+		$html .= wp_kses_post( $menu_output );
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	/**
+	 * Enqueue block editor assets.
+	 *
+	 * Enqueues the necessary CSS and JavaScript files for the block editor.
+	 *
+	 * @since 1.1
+	 * @return void
+	 */
+	private function enqueue_block_assets() {
+		// Register block editor styles.
+		wp_register_style(
+			'advanced-sidebar-nav-block-editor',
+			plugin_dir_url( __DIR__ ) . 'build/index.css',
+			[ 'advanced-sidebar-nav' ],
+			'1.1.0'
+		);
+
+		// Register block editor scripts.
+		wp_register_script(
+			'advanced-sidebar-nav-block-editor',
+			plugin_dir_url( __DIR__ ) . 'build/index.js',
+			[ 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n' ],
+			'1.1.0',
+			true
+		);
+
+		// Register frontend styles.
+		wp_register_style(
+			'advanced-sidebar-nav-block',
+			plugin_dir_url( __DIR__ ) . 'build/style-index.css',
+			[ 'advanced-sidebar-nav' ],
+			'1.1.0'
+		);
+
+		// Register view script.
+		wp_register_script(
+			'advanced-sidebar-nav-block-view',
+			plugin_dir_url( __DIR__ ) . 'build/view.js',
+			[],
+			'1.1.0',
+			true
+		);
+	}
+}

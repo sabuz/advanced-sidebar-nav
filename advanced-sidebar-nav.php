@@ -14,14 +14,11 @@ final class Advanced_Sidebar_Nav {
 	protected static $instance = null;
 
 	protected function __construct() {
-		// methods
-		$this->load_files();
-
 		// actions
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_scripts' ] );
 		add_action( 'widgets_init', [ $this, 'register_widget' ] );
-		add_action( 'init', [ $this, 'register_block' ] );
+		add_action( 'init', [ $this, 'init_block_registration' ] );
 		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
 	}
 
@@ -32,11 +29,6 @@ final class Advanced_Sidebar_Nav {
 		}
 
 		return $instance;
-	}
-
-	// load required files
-	public function load_files() {
-		require_once plugin_dir_path( __FILE__ ) . 'widget/class-advanced-sidebar-nav-widget.php';
 	}
 
 	// register assets
@@ -65,12 +57,18 @@ final class Advanced_Sidebar_Nav {
 
 	// register wp widget
 	public function register_widget() {
+		require_once plugin_dir_path( __FILE__ ) . 'widget/class-advanced-sidebar-nav-widget.php';
+
 		register_widget( 'Advanced_Sidebar_Nav_Widget' );
 	}
 
-	// Simple block registration - no manifest needed for single block
-	public function register_block() {
-		register_block_type( __DIR__ . '/block' );
+	// Initialize block registration for WordPress 5.8+
+	public function init_block_registration() {
+		// Only load block registration for WordPress 5.8+.
+		if ( version_compare( get_bloginfo( 'version' ), '5.8', '>=' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'block/class-block-registration.php';
+			new Advanced_Sidebar_Nav_Block_Registration();
+		}
 	}
 
 	// Register REST API routes

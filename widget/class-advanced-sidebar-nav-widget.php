@@ -35,12 +35,13 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 		$current_wp_version = get_bloginfo( 'version' );
 		$widget_title       = __( 'Advanced Sidebar Nav', 'advanced-sidebar-nav' );
 		$widget_opts        = [
-			'classname'   => 'advanced-sidebar-nav-widget',
-			'description' => __( 'The best way to display navigation menus on sidebar, no matter how many depth!', 'advanced-sidebar-nav' ),
+			'classname'             => 'advanced-sidebar-nav-widget',
+			'description'           => __( 'The best way to display navigation menus on sidebar, no matter how many depth!', 'advanced-sidebar-nav' ),
+			'show_instance_in_rest' => true,
 		];
 
-		// Show deprecation notice for WordPress 5.5+.
-		if ( version_compare( $current_wp_version, '5.5', '>' ) ) {
+		// Show deprecation notice for WordPress 5.7+.
+		if ( version_compare( $current_wp_version, '5.7', '>' ) ) {
 			$widget_title               = __( 'Advanced Sidebar Nav (Legacy)', 'advanced-sidebar-nav' );
 			$widget_opts['description'] = __( 'This widget is deprecated. Please use our "Advanced Sidebar Nav" block for better results.', 'advanced-sidebar-nav' );
 		}
