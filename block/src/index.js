@@ -1,18 +1,22 @@
 /**
  * Block editor JavaScript for Advanced Sidebar Nav.
  * 
- * This file is loaded by the block editor but the block registration
- * is handled in PHP via the Advanced_Sidebar_Nav_Block class.
+ * This file handles the block editor interface while block registration
+ * and server-side rendering are handled in PHP via the Advanced_Sidebar_Nav_Block class.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 
-/**
- * Internal dependencies
- */
 import Edit from './edit';
 
 /**
- * Note: Block registration is handled in PHP via Advanced_Sidebar_Nav_Block class.
- * This file only contains the editor interface components.
+ * Register the block editor component.
+ * 
+ * This registers only the editor interface component. The block itself is registered
+ * in PHP with server-side rendering capabilities.
  */
+const { registerBlockType } = wp.blocks;
+
+registerBlockType('advanced-sidebar-nav/advanced-sidebar-nav', {
+	edit: Edit,
+});
