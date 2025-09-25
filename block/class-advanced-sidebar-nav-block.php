@@ -83,8 +83,8 @@ class Advanced_Sidebar_Nav_Block {
 			]
 		);
 
-		// Enqueue block assets.
-		$this->enqueue_block_assets();
+		// Register block assets.
+		$this->register_block_assets();
 	}
 
 	/**
@@ -153,14 +153,14 @@ class Advanced_Sidebar_Nav_Block {
 	}
 
 	/**
-	 * Enqueue block editor assets.
+	 * Register block editor assets.
 	 *
-	 * Enqueues the necessary CSS and JavaScript files for the block editor.
+	 * Registers the necessary CSS and JavaScript files for the block editor.
 	 *
 	 * @since 1.1
 	 * @return void
 	 */
-	private function enqueue_block_assets() {
+	private function register_block_assets() {
 		// Register block editor styles.
 		wp_register_style(
 			'advanced-sidebar-nav-block-editor',

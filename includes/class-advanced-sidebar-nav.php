@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 2.0
  */
-final class Advanced_Sidebar_Nav {
+class Advanced_Sidebar_Nav {
 
 	/**
 	 * Plugin instance.
