@@ -133,7 +133,6 @@ class Advanced_Sidebar_Nav_Block {
 					'advanced-sidebar-nav-block',
 					'advanced-sidebar-nav',
 				],
-				'view_script'     => 'advanced-sidebar-nav-block-view',
 			]
 		);
 
@@ -238,15 +237,6 @@ class Advanced_Sidebar_Nav_Block {
 			plugin_dir_url( __DIR__ ) . 'build/style-index.css',
 			[ 'advanced-sidebar-nav' ],
 			'1.1.0'
-		);
-
-		// Register view script.
-		wp_register_script(
-			'advanced-sidebar-nav-block-view',
-			plugin_dir_url( __DIR__ ) . 'build/view.js',
-			[],
-			'1.1.0',
-			true
 		);
 	}
 

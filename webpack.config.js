@@ -4,7 +4,6 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		'block/build/index': './block/src/index.js',
-		'block/build/view': './block/src/view.js',
 	},
 	output: {
 		path: __dirname,
