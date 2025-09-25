@@ -11,7 +11,9 @@
 		"dev": "concurrently \"wp-scripts start\" \"npm run dev:scss\"",
 		"dev:scss": "npx sass assets/style.scss assets/style.css --watch --style=expanded --no-source-map",
 		"lint:css": "wp-scripts lint-style",
+		"lint:css:fix": "wp-scripts lint-style --fix",
 		"lint:js": "wp-scripts lint-js",
+		"lint:js:fix": "wp-scripts lint-js --fix",
 		"packages-update": "wp-scripts packages-update"
 	},
 	"devDependencies": {
