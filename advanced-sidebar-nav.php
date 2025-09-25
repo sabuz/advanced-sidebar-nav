@@ -36,8 +36,7 @@ final class Advanced_Sidebar_Nav {
 
 	// load required files
 	public function load_files() {
-		require_once plugin_dir_path( __FILE__ ) . 'widget/options.php';
-		require_once plugin_dir_path( __FILE__ ) . 'widget/widget.php';
+		require_once plugin_dir_path( __FILE__ ) . 'widget/class-advanced-sidebar-nav-widget.php';
 	}
 
 	// register assets
@@ -76,68 +75,76 @@ final class Advanced_Sidebar_Nav {
 
 	// Register REST API routes
 	public function register_rest_routes() {
-		register_rest_route( 'advanced-sidebar-nav/v1', '/menu/(?P<menu_slug>[a-zA-Z0-9_-]+)', [
-			'methods' => 'GET',
-			'callback' => [ $this, 'get_menu_html' ],
-			'permission_callback' => function() {
-				return current_user_can( 'edit_posts' );
-			},
-			'args' => [
-				'menu_slug' => [
-					'required' => true,
-					'type' => 'string',
-					'sanitize_callback' => 'sanitize_text_field',
+		register_rest_route(
+			'advanced-sidebar-nav/v1',
+			'/menu/(?P<menu_slug>[a-zA-Z0-9_-]+)',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_menu_html' ],
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'args'                => [
+					'menu_slug'    => [
+						'required'          => true,
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'theme'        => [
+						'required'          => false,
+						'type'              => 'string',
+						'default'           => 'default',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'accent_color' => [
+						'required'          => false,
+						'type'              => 'string',
+						'default'           => '#0f434f',
+						'sanitize_callback' => 'sanitize_hex_color',
+					],
 				],
-				'theme' => [
-					'required' => false,
-					'type' => 'string',
-					'default' => 'default',
-					'sanitize_callback' => 'sanitize_text_field',
-				],
-				'accent_color' => [
-					'required' => false,
-					'type' => 'string',
-					'default' => '#0f434f',
-					'sanitize_callback' => 'sanitize_hex_color',
-				],
-			],
-		] );
+			]
+		);
 	}
 
 	// Get menu HTML via REST API
 	public function get_menu_html( $request ) {
-		$menu_slug = $request->get_param( 'menu_slug' );
-		$theme = $request->get_param( 'theme' );
+		$menu_slug    = $request->get_param( 'menu_slug' );
+		$theme        = $request->get_param( 'theme' );
 		$accent_color = $request->get_param( 'accent_color' );
 
 		// Build wrapper attributes
-		$classes = [ 'advanced-sidebar-nav', 'advanced-sidebar-nav-' . $theme ];
-		$wrapper_attributes = get_block_wrapper_attributes( [
-			'class' => implode( ' ', $classes ),
-			'style' => ! empty( $accent_color ) ? '--accent-color: ' . esc_attr( $accent_color ) . ';' : '',
-		] );
+		$classes            = [ 'advanced-sidebar-nav', 'advanced-sidebar-nav-' . $theme ];
+		$wrapper_attributes = get_block_wrapper_attributes(
+			[
+				'class' => implode( ' ', $classes ),
+				'style' => ! empty( $accent_color ) ? '--accent-color: ' . esc_attr( $accent_color ) . ';' : '',
+			]
+		);
 
 		// Get menu HTML
-		$nav_menu = wp_nav_menu( [
-			'menu' => $menu_slug,
-			'menu_class' => 'advanced-sidebar-menu',
-			'container_class' => 'advanced-sidebar-nav-container',
-			'container' => false,
-			'echo' => false,
-		] );
+		$nav_menu = wp_nav_menu(
+			[
+				'menu'            => $menu_slug,
+				'menu_class'      => 'advanced-sidebar-menu',
+				'container_class' => 'advanced-sidebar-nav-container',
+				'container'       => false,
+				'echo'            => false,
+			]
+		);
 
 		if ( ! $nav_menu ) {
 			return new WP_Error( 'menu_not_found', 'Menu not found', [ 'status' => 404 ] );
 		}
 
-		$html = '<div ' . wp_kses_data( $wrapper_attributes ) . '>';
+		$html  = '<div ' . wp_kses_data( $wrapper_attributes ) . '>';
 		$html .= wp_kses_post( $nav_menu );
 		$html .= '</div>';
 
 		return [
-			'html' => $html,
-			'menu_slug' => $menu_slug,
-			'theme' => $theme,
+			'html'         => $html,
+			'menu_slug'    => $menu_slug,
+			'theme'        => $theme,
 			'accent_color' => $accent_color,
 		];
 	}
