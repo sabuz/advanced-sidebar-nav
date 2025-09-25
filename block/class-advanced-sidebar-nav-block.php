@@ -66,7 +66,7 @@ class Advanced_Sidebar_Nav_Block {
 		global $wp_version;
 
 		// Check WordPress version.
-		if ( version_compare( $wp_version, Advanced_Sidebar_Nav::MIN_WP_VERSION_FOR_BLOCKS, '<' ) ) {
+		if ( version_compare( $wp_version, ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS, '<' ) ) {
 			return false;
 		}
 
@@ -217,26 +217,26 @@ class Advanced_Sidebar_Nav_Block {
 		// Register block editor styles.
 		wp_register_style(
 			'advanced-sidebar-nav-block-editor',
-			plugin_dir_url( __DIR__ ) . 'build/index.css',
+			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/index.css',
 			[ 'advanced-sidebar-nav' ],
-			'1.1.0'
+			ADVANCED_SIDEBAR_NAV_VERSION
 		);
 
 		// Register block editor scripts.
 		wp_register_script(
 			'advanced-sidebar-nav-block-editor',
-			plugin_dir_url( __DIR__ ) . 'build/index.js',
+			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/index.js',
 			[ 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n' ],
-			'1.1.0',
+			ADVANCED_SIDEBAR_NAV_VERSION,
 			true
 		);
 
 		// Register frontend styles.
 		wp_register_style(
 			'advanced-sidebar-nav-block',
-			plugin_dir_url( __DIR__ ) . 'build/style-index.css',
+			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/style-index.css',
 			[ 'advanced-sidebar-nav' ],
-			'1.1.0'
+			ADVANCED_SIDEBAR_NAV_VERSION
 		);
 	}
 

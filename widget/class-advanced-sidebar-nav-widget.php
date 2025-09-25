@@ -41,7 +41,7 @@ class Advanced_Sidebar_Nav_Widget extends WP_Widget {
 		];
 
 		// Show deprecation notice for WordPress 5.8+.
-		if ( version_compare( $current_wp_version, Advanced_Sidebar_Nav::MIN_WP_VERSION_FOR_BLOCKS, '>=' ) ) {
+		if ( version_compare( $current_wp_version, ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS, '>=' ) ) {
 			$widget_title               = __( 'Advanced Sidebar Nav (Legacy)', 'advanced-sidebar-nav' );
 			$widget_opts['description'] = __( 'This widget is deprecated. Please use our "Advanced Sidebar Nav" block for better results.', 'advanced-sidebar-nav' );
 		}
