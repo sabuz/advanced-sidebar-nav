@@ -1,16 +1,4 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
 import { __ } from "@wordpress/i18n";
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
 import { InspectorControls, useBlockProps } from "@wordpress/block-editor";
 import {
 	PanelBody,
@@ -21,147 +9,10 @@ import {
 import { useSelect } from "@wordpress/data";
 import { useState, useEffect, useRef } from "@wordpress/element";
 import apiFetch from "@wordpress/api-fetch";
+import { initNav } from "./utils";
 
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
 import "./editor.scss";
 
-// helpers for smooth submenu expand/collapse
-const slideDown = (el, duration = 300) => {
-	el.style.removeProperty("display");
-	let display = window.getComputedStyle(el).display;
-	if (display === "none") {
-		el.style.display = "block";
-	}
-	const height = el.scrollHeight;
-	el.style.overflow = "hidden";
-	el.style.height = "0px";
-	el.style.transition = `height ${duration}ms ease`;
-	// allow styles to apply before change
-	requestAnimationFrame(() => {
-		el.style.height = height + "px";
-	});
-	const end = () => {
-		el.removeEventListener("transitionend", end);
-		el.style.removeProperty("height");
-		el.style.removeProperty("overflow");
-		el.style.removeProperty("transition");
-	};
-	el.addEventListener("transitionend", end);
-};
-
-const slideUp = (el, duration = 300) => {
-	const height = el.scrollHeight;
-	el.style.overflow = "hidden";
-	el.style.height = height + "px";
-	el.style.transition = `height ${duration}ms ease`;
-	requestAnimationFrame(() => {
-		el.style.height = "0px";
-	});
-	const end = () => {
-		el.removeEventListener("transitionend", end);
-		el.style.display = "none";
-		el.style.removeProperty("height");
-		el.style.removeProperty("overflow");
-		el.style.removeProperty("transition");
-	};
-	el.addEventListener("transitionend", end);
-};
-// ------------------------------------------- //
-
-function getDepth(li) {
-	let depth = 0;
-	let current = li.parentElement;
-	while (current && !current.classList.contains("advanced-sidebar-nav")) {
-		if (current.tagName === "UL") depth++;
-		current = current.parentElement;
-	}
-	return Math.max(0, depth - 1);
-}
-
-function setIndentation(root) {
-	const anchors = root.querySelectorAll("ul li a");
-	anchors.forEach((a) => {
-		const li = a.closest("li");
-		if (!li) return;
-		const depth = getDepth(li);
-		if (depth > 0) {
-			a.style.setProperty("padding-left", depth * 40 + "px", "important");
-		}
-	});
-}
-
-function initNav(container) {
-	const items = container.querySelectorAll("li.menu-item-has-children");
-	items.forEach((item) => {
-		const link = item.querySelector(":scope > a");
-		const submenu = item.querySelector(":scope > ul");
-		if (!link || !submenu) return;
-
-		// Avoid duplicates
-		if (link.querySelector(".advanced-sidebar-nav-toggle")) return;
-
-		const toggle = document.createElement("span");
-		toggle.className = "advanced-sidebar-nav-toggle";
-		toggle.setAttribute("role", "button");
-		toggle.setAttribute("tabindex", "0");
-		toggle.setAttribute("aria-expanded", "false");
-		link.appendChild(toggle);
-
-		const initiallyOpen =
-			window.getComputedStyle(submenu).display === "block" ||
-			item.classList.contains("current-menu-ancestor");
-		if (initiallyOpen) {
-			toggle.classList.add("advanced-sidebar-nav-toggle-open");
-			link.classList.add("advanced-sidebar-nav-menu-open");
-			toggle.setAttribute("aria-expanded", "true");
-			submenu.style.display = "block";
-		} else {
-			submenu.style.display = "none";
-		}
-
-		function toggleSubmenu() {
-			const isOpen = toggle.classList.toggle(
-				"advanced-sidebar-nav-toggle-open",
-			);
-			if (isOpen) {
-				link.classList.add("advanced-sidebar-nav-menu-open");
-				slideDown(submenu, 300);
-				toggle.setAttribute("aria-expanded", "true");
-			} else {
-				link.classList.remove("advanced-sidebar-nav-menu-open");
-				slideUp(submenu, 300);
-				toggle.setAttribute("aria-expanded", "false");
-			}
-		}
-
-		toggle.addEventListener("click", (e) => {
-			e.preventDefault();
-			toggleSubmenu();
-		});
-		toggle.addEventListener("keydown", (e) => {
-			if (e.key === "Enter" || e.key === " ") {
-				e.preventDefault();
-				toggleSubmenu();
-			}
-		});
-	});
-
-	setIndentation(container);
-}
-
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {Element} Element to render.
- */
 export default function Edit({ attributes, setAttributes }) {
 	const { menu, theme, accentColor } = attributes;
 
@@ -192,7 +43,6 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}, [menus]);
 
-	// Fetch menu HTML when menu or theme changes
 	useEffect(() => {
 		if (!menu) {
 			setMenuHtml("");
@@ -203,10 +53,8 @@ export default function Edit({ attributes, setAttributes }) {
 		fetchMenuHtml();
 	}, [menu, theme]);
 
-	// Update accent color by modifying the HTML directly
 	useEffect(() => {
 		if (originalMenuHtmlRef.current && accentColor) {
-			// Update the style attribute in the HTML string
 			const updatedHtml = originalMenuHtmlRef.current.replace(
 				/style="[^"]*"/,
 				`style="--accent-color: ${accentColor};"`,
@@ -228,7 +76,6 @@ export default function Edit({ attributes, setAttributes }) {
 			path: `/advanced-sidebar-nav/v1/menu/${menu}?${params}`,
 		})
 			.then((response) => {
-				// Store original HTML in ref
 				originalMenuHtmlRef.current = response.html;
 				setMenuHtml(response.html);
 				setError(null);
@@ -243,7 +90,6 @@ export default function Edit({ attributes, setAttributes }) {
 			});
 	};
 
-	// Initialize submenu toggle behavior inside the editor preview
 	useEffect(() => {
 		if (!menu) return;
 
@@ -264,7 +110,6 @@ export default function Edit({ attributes, setAttributes }) {
 					title={__("Settings", "advanced-sidebar-nav")}
 					initialOpen={true}
 				>
-					{/* Menu Select */}
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
@@ -274,7 +119,6 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ menu: value })}
 					/>
 
-					{/* Theme Select */}
 					<SelectControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
@@ -293,7 +137,6 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ theme: value })}
 					/>
 
-					{/* Accent Color */}
 					<BaseControl
 						__nextHasNoMarginBottom
 						label={__("Accent Color", "advanced-sidebar-nav")}
@@ -307,7 +150,6 @@ export default function Edit({ attributes, setAttributes }) {
 					</BaseControl>
 				</PanelBody>
 			</InspectorControls>
-			{/* Block preview */}
 			<div {...useBlockProps()}>
 				{!menu ? (
 					<div className="advanced-sidebar-nav-placeholder">
