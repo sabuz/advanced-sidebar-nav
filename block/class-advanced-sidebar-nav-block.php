@@ -13,7 +13,7 @@
  */
 
 /**
- * Block Registration Class
+ * Advanced Sidebar Nav Block Class
  *
  * This class handles the conditional registration of the Advanced Sidebar Nav block
  * based on WordPress version and block editor widget availability.
@@ -21,15 +21,8 @@
  * @package Advanced_Sidebar_Nav
  * @since 1.1
  */
-class Advanced_Sidebar_Nav_Block_Registration {
+class Advanced_Sidebar_Nav_Block {
 
-	/**
-	 * Minimum WordPress version required for block editor widgets.
-	 *
-	 * @since 1.1
-	 * @var string
-	 */
-	const MIN_WP_VERSION = '5.8';
 
 	/**
 	 * Block registration constructor.
@@ -38,6 +31,7 @@ class Advanced_Sidebar_Nav_Block_Registration {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'maybe_register_block' ] );
+		add_action( 'rest_api_init', [ $this, 'register_rest_routes' ] );
 	}
 
 	/**
@@ -72,7 +66,7 @@ class Advanced_Sidebar_Nav_Block_Registration {
 		global $wp_version;
 
 		// Check WordPress version.
-		if ( version_compare( $wp_version, self::MIN_WP_VERSION, '<' ) ) {
+		if ( version_compare( $wp_version, Advanced_Sidebar_Nav::MIN_WP_VERSION_FOR_BLOCKS, '<' ) ) {
 			return false;
 		}
 
@@ -254,5 +248,96 @@ class Advanced_Sidebar_Nav_Block_Registration {
 			'1.1.0',
 			true
 		);
+	}
+
+	/**
+	 * Register REST API routes for block functionality.
+	 *
+	 * Registers the REST endpoint used by the block editor to fetch menu HTML.
+	 *
+	 * @since 1.1
+	 * @return void
+	 */
+	public function register_rest_routes() {
+		register_rest_route(
+			'advanced-sidebar-nav/v1',
+			'/menu/(?P<menu_slug>[a-zA-Z0-9_-]+)',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_menu_html' ],
+				'permission_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'args'                => [
+					'menu_slug'    => [
+						'required'          => true,
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'theme'        => [
+						'required'          => false,
+						'type'              => 'string',
+						'default'           => 'default',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'accent_color' => [
+						'required'          => false,
+						'type'              => 'string',
+						'default'           => '#0f434f',
+						'sanitize_callback' => 'sanitize_hex_color',
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Get menu HTML via REST API.
+	 *
+	 * Handles REST API requests to fetch menu HTML for the block editor.
+	 *
+	 * @since 1.1
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return array|WP_Error Menu HTML data or error.
+	 */
+	public function get_menu_html( $request ) {
+		$menu_slug    = $request->get_param( 'menu_slug' );
+		$theme        = $request->get_param( 'theme' );
+		$accent_color = $request->get_param( 'accent_color' );
+
+		// Build wrapper attributes.
+		$classes            = [ 'advanced-sidebar-nav', 'advanced-sidebar-nav-' . $theme ];
+		$wrapper_attributes = get_block_wrapper_attributes(
+			[
+				'class' => implode( ' ', $classes ),
+				'style' => ! empty( $accent_color ) ? '--accent-color: ' . esc_attr( $accent_color ) . ';' : '',
+			]
+		);
+
+		// Get menu HTML.
+		$nav_menu = wp_nav_menu(
+			[
+				'menu'            => $menu_slug,
+				'menu_class'      => 'advanced-sidebar-menu',
+				'container_class' => 'advanced-sidebar-nav-container',
+				'container'       => false,
+				'echo'            => false,
+			]
+		);
+
+		if ( ! $nav_menu ) {
+			return new WP_Error( 'menu_not_found', 'Menu not found', [ 'status' => 404 ] );
+		}
+
+		$html  = '<div ' . wp_kses_data( $wrapper_attributes ) . '>';
+		$html .= wp_kses_post( $nav_menu );
+		$html .= '</div>';
+
+		return [
+			'html'         => $html,
+			'menu_slug'    => $menu_slug,
+			'theme'        => $theme,
+			'accent_color' => $accent_color,
+		];
 	}
 }
