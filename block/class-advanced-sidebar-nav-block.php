@@ -79,10 +79,7 @@ class Advanced_Sidebar_Nav_Block {
 					'advanced-sidebar-nav-block-editor',
 					'advanced-sidebar-nav',
 				],
-				'style'           => [
-					'advanced-sidebar-nav-block',
-					'advanced-sidebar-nav',
-				],
+				'style'           => [ 'advanced-sidebar-nav' ],
 			]
 		);
 
@@ -179,14 +176,6 @@ class Advanced_Sidebar_Nav_Block {
 			[ 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-i18n' ],
 			ADVANCED_SIDEBAR_NAV_VERSION,
 			true
-		);
-
-		// Register frontend styles.
-		wp_register_style(
-			'advanced-sidebar-nav-block',
-			ADVANCED_SIDEBAR_NAV_PLUGIN_URL . 'block/build/style-index.css',
-			[ 'advanced-sidebar-nav' ],
-			ADVANCED_SIDEBAR_NAV_VERSION
 		);
 	}
 
