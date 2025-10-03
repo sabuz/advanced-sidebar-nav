@@ -28,3 +28,7 @@ Thumbs.db export-ignore
 # Build artifacts - exclude from distribution
 *.log export-ignore
 *.map export-ignore
+
+# Source files - exclude from distribution
+block/src export-ignore
+assets/style.scss export-ignore
