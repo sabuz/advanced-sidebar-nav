@@ -1,59 +1,44 @@
 <?php
 /**
- * Plugin Name: Advanced Sidebar Nav
- * Description: The best way to display navigation menus on sidebar, no matter how many depth!
- * Version: 1.1
- * Author: Nazmul Sabuz
- * Author URI: https://profiles.wordpress.org/nazsabuz/
- * License: GPL2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin Name:       Advanced Vertical Menu
+ * Plugin URI:        https://wordpress.org/plugins/advanced-sidebar-nav/
+ * Description:       Create beautiful vertical navigation menus anywhere on your site! Features both modern block editor support and legacy widget compatibility. Perfect for sidebars, footers, or any content area.
+ * Version:           2.0
+ * Requires at least: 4.0
+ * Requires PHP:      5.6.20
+ * Author:            Nazmul Sabuz
+ * Author URI:        https://profiles.wordpress.org/nazsabuz/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       advanced-sidebar-nav
+ * Domain Path:       /languages
+ *
+ * @package           Advanced_Sidebar_Nav
+ * @version           2.0
+ * @link              https://wordpress.org/plugins/advanced-sidebar-nav/
  */
 
-final class Advanced_Sidebar_Nav
-{
-    protected static $instance = null;
-
-    protected function __construct()
-    {
-        // methods
-        $this->load_files();
-
-        // actions
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('widgets_init', array($this, 'register_widget'));
-    }
-
-    // create instance
-    public static function instance()
-    {
-        if (self::$instance == null) {
-            $instance = new self;
-        }
-
-        return $instance;
-    }
-
-    // load required files
-    public function load_files()
-    {
-        require_once plugin_dir_path(__FILE__) . 'inc/options.php';
-        require_once plugin_dir_path(__FILE__) . 'inc/widget.php';
-    }
-
-    // register assets
-    public function enqueue_scripts()
-    {
-        wp_register_style('advanced-sidebar-nav', plugin_dir_url(__FILE__) . 'assets/advanced-sidebar-nav.css');
-        wp_register_script('advanced-sidebar-nav', plugin_dir_url(__FILE__) . 'assets/advanced-sidebar-nav.js');
-    }
-
-    // register wp widget
-    public function register_widget()
-    {
-        register_widget('Advanced_Sidebar_Nav_Widget');
-    }
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-add_action('plugins_loaded', function () {
-    Advanced_Sidebar_Nav::instance();
-});
+// Define plugin constants.
+define( 'ADVANCED_SIDEBAR_NAV_VERSION', '2.0' );
+define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS', '5.8' );
+
+/**
+ * Load the main plugin class.
+ *
+ * @since 1.0.0
+ */
+require_once ADVANCED_SIDEBAR_NAV_PLUGIN_DIR . 'includes/class-advanced-sidebar-nav.php';
+
+/**
+ * Initialize the plugin.
+ *
+ * @since 1.0.0
+ */
+Advanced_Sidebar_Nav::init();

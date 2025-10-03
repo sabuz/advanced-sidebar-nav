@@ -1,2 +1,6 @@
 <?php
-// silence is golden
+/**
+ * Silence is golden.
+ *
+ * @package Advanced_Sidebar_Nav
+ */
