@@ -153,14 +153,29 @@ const setIndentation = ( root ) => {
  *
  * Sets up toggle buttons, event handlers, and initial state for all
  * menu items with children. Also applies proper indentation.
+ * Prevents link navigation in editor context.
  *
  * @param {HTMLElement} container - The navigation container element.
  * @return {void}
  */
-const initNav = ( container ) => {
-	const items = container.querySelectorAll( 'li.menu-item-has-children' );
+const initNav = ( container ) => {	
+	// Prevent all link navigation in editor context
+	const allLinks = container.querySelectorAll( 'a' );
+	allLinks.forEach( ( link ) => {
+		link.addEventListener( 'click', ( event ) => {
+			event.preventDefault();
+			event.stopPropagation();
+		} );
+	} );
 
-	items.forEach( ( item ) => {
+	// Find items with children dynamically (in case menu-item-has-children class is not present)
+	const allItems = container.querySelectorAll( 'li' );
+	const itemsWithChildren = Array.from( allItems ).filter( item => {
+		const submenu = item.querySelector( ':scope > ul' );
+		return submenu !== null;
+	} );
+
+	itemsWithChildren.forEach( ( item ) => {
 		const link = item.querySelector( ':scope > a' );
 		const submenu = item.querySelector( ':scope > ul' );
 

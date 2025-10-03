@@ -74,32 +74,6 @@ export default function Edit( { attributes, setAttributes } ) {
 	}, [ menus ] );
 
 	/**
-	 * Fetch menu HTML when menu or theme changes.
-	 */
-	useEffect( () => {
-		if ( ! menu ) {
-			setMenuHtml( '' );
-			setError( null );
-			return;
-		}
-
-		fetchMenuHtml();
-	}, [ menu, theme, fetchMenuHtml ] );
-
-	/**
-	 * Update menu HTML with accent color when accent color changes.
-	 */
-	useEffect( () => {
-		if ( originalMenuHtmlRef.current && accentColor ) {
-			const updatedHtml = originalMenuHtmlRef.current.replace(
-				/style="[^"]*"/,
-				`style="--accent-color: ${ accentColor };"`
-			);
-			setMenuHtml( updatedHtml );
-		}
-	}, [ accentColor ] );
-
-	/**
 	 * Fetch menu HTML from the REST API.
 	 *
 	 * @return {void}
@@ -129,7 +103,49 @@ export default function Edit( { attributes, setAttributes } ) {
 			.finally( () => {
 				setIsLoading( false );
 			} );
-	}, [ menu, theme, accentColor ] );
+	}, [ menu, theme ] );
+
+	/**
+	 * Fetch menu HTML when menu or theme changes.
+	 */
+	useEffect( () => {
+		if ( ! menu ) {
+			setMenuHtml( '' );
+			setError( null );
+			return;
+		}
+
+		fetchMenuHtml();
+	}, [ menu, theme, fetchMenuHtml ] );
+
+	/**
+	 * Update menu HTML with accent color when accent color changes.
+	 */
+	useEffect( () => {
+		if ( originalMenuHtmlRef.current && accentColor ) {
+			// Instead of regenerating HTML, update the CSS custom property directly
+			const wrapper = wrapperRef.current;
+			
+			if ( wrapper ) {
+				const root = wrapper.querySelector( '.advanced-sidebar-nav' );
+				
+				if ( root ) {
+					root.style.setProperty( '--accent-color', accentColor );
+				}
+			} else {
+				// Retry after a short delay if wrapper is not ready
+				setTimeout( () => {
+					const retryWrapper = wrapperRef.current;
+					if ( retryWrapper ) {
+						const retryRoot = retryWrapper.querySelector( '.advanced-sidebar-nav' );
+						if ( retryRoot ) {
+							retryRoot.style.setProperty( '--accent-color', accentColor );
+						}
+					}
+				}, 100 );
+			}
+		}
+	}, [ accentColor ] );
 
 	/**
 	 * Initialize navigation functionality after menu HTML is rendered.
@@ -139,20 +155,25 @@ export default function Edit( { attributes, setAttributes } ) {
 			return;
 		}
 
-		const timer = setTimeout( () => {
+		// Wait for the ref to be set and stable
+		const checkAndInit = () => {
 			const wrapper = wrapperRef.current;
+			
 			if ( ! wrapper ) {
+				setTimeout( checkAndInit, 50 );
 				return;
 			}
 
 			const root = wrapper.querySelector( '.advanced-sidebar-nav' );
+			
 			if ( root ) {
 				initNav( root );
 			}
-		}, 100 );
+		};
 
-		return () => clearTimeout( timer );
-	}, [ menu, theme, accentColor ] );
+		// Start checking after a short delay
+		setTimeout( checkAndInit, 100 );
+	}, [ menu, theme ] );
 
 	/**
 	 * Render the appropriate content based on current state.
