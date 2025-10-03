@@ -14,7 +14,8 @@
 		"lint:css:fix": "wp-scripts lint-style --fix",
 		"lint:js": "wp-scripts lint-js",
 		"lint:js:fix": "wp-scripts lint-js --fix",
-		"packages-update": "wp-scripts packages-update"
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "git archive --format=zip HEAD -o advanced-sidebar-nav.zip"
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^30.24.0",
