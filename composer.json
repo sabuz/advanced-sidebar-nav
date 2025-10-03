@@ -9,8 +9,8 @@
 		"wp-coding-standards/wpcs": "^3.0"
 	},
 	"scripts": {
-		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml --extensions=php ./block ./widget advanced-sidebar-nav.php",
-		"phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml --extensions=php ./block ./widget advanced-sidebar-nav.php",
+		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml --extensions=php ./block/*.php ./includes ./widget advanced-sidebar-nav.php",
+		"phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml --extensions=php ./block/*.php ./includes ./widget advanced-sidebar-nav.php",
 		"update-deps": "composer update --with-dependencies",
 		"check-updates": "composer outdated"
 	}
