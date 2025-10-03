@@ -1,6 +1,6 @@
 === Advanced Vertical Menu ===
 Contributors: nazsabuz
-Tags: navigation menu, sidebar nav, block editor, gutenberg, widget menu, vertical menu, site navigation
+Tags: navigation menu, block editor, vertical menu, sidebar nav, widget menu
 Requires at least: 4.0
 Tested up to: 6.8
 Stable tag: 2.0
