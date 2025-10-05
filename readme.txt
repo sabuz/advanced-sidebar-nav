@@ -3,7 +3,7 @@ Contributors: nazsabuz
 Tags: navigation menu, block editor, vertical menu, sidebar nav, widget menu
 Requires at least: 4.0
 Tested up to: 6.8
-Stable tag: 2.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,10 @@ After downloading and extracting the latest version of the plugin:
 If you encounter any bugs, or have comments or suggestions, please submit a ticket using support forum.
 
 == Changelog ==
+
+= 2.0.1 =
+* Updated block title to "Advanced Vertical Menu" for consistency
+* Improved widget descriptions for better clarity
 
 = 2.0 =
 * **MAJOR UPDATE** - Added full block editor support!

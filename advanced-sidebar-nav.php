@@ -3,7 +3,7 @@
  * Plugin Name:       Advanced Vertical Menu
  * Plugin URI:        https://wordpress.org/plugins/advanced-sidebar-nav/
  * Description:       Create beautiful vertical navigation menus anywhere on your site! Features both modern block editor support and legacy widget compatibility. Perfect for sidebars, footers, or any content area.
- * Version:           2.0
+ * Version:           2.0.1
  * Requires at least: 4.0
  * Requires PHP:      5.6.20
  * Author:            Nazmul Sabuz
@@ -14,7 +14,7 @@
  * Domain Path:       /languages
  *
  * @package           Advanced_Sidebar_Nav
- * @version           2.0
+ * @version           2.0.1
  * @link              https://wordpress.org/plugins/advanced-sidebar-nav/
  */
 
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'ADVANCED_SIDEBAR_NAV_VERSION', '2.0' );
+define( 'ADVANCED_SIDEBAR_NAV_VERSION', '2.0.1' );
 define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ADVANCED_SIDEBAR_NAV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ADVANCED_SIDEBAR_NAV_MIN_WP_VERSION_FOR_BLOCKS', '5.8' );

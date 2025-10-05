@@ -8,7 +8,7 @@
  * @package Advanced_Sidebar_Nav
  * @since 1.0
  * @author Nazmul Sabuz
- * @version 1.1
+ * @version 2.0.1
  * @license GPL-2.0
  */
 
