@@ -48,10 +48,10 @@ class Advanced_Sidebar_Nav_Block {
 			'advanced-sidebar-nav/advanced-sidebar-nav',
 			[
 				'api_version'     => 3,
-				'title'           => __( 'Advanced Sidebar Nav', 'advanced-sidebar-nav' ),
+				'title'           => __( 'Advanced Vertical Menu', 'advanced-sidebar-nav' ),
 				'category'        => 'widgets',
 				'icon'            => 'menu',
-				'description'     => __( 'Display navigation menus in sidebar with advanced styling options.', 'advanced-sidebar-nav' ),
+				'description'     => __( 'Create beautiful vertical navigation menus anywhere on your site with advanced styling options.', 'advanced-sidebar-nav' ),
 				'render_callback' => [ $this, 'render_block' ],
 				'attributes'      => [
 					'menu'        => [
